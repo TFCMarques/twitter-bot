@@ -1,11 +1,11 @@
 import os
 import praw
 
-CLIENT_ID = os.environ.get("CLIENT_ID", "CoQUgau-OCVztg")
-CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "ns03Uf-zoBdl2oj_784ucR45gYo")
-REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME", "TiagoFCM")
-REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD", "theredguy98")
-USER_AGENT = os.environ.get("USER_AGENT", "meme-bot")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
+REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
+USER_AGENT = os.environ.get("USER_AGENT")
 
 
 class RedditService:
@@ -23,3 +23,8 @@ class RedditService:
         reddit = self.reddit_api_auth()
         subreddit = reddit.subreddit(subreddit)
         return subreddit.top(time_filter=time, limit=limit)
+
+    def get_subreddit_hot_posts(self, subreddit: str, limit: int):
+        reddit = self.reddit_api_auth()
+        subreddit = reddit.subreddit(subreddit)
+        return subreddit.hot(limit=limit)

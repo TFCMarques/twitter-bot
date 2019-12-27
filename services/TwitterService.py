@@ -2,10 +2,10 @@ import os
 import tweepy
 import requests
 
-CONSUMER_KEY = os.environ.get("CONSUMER_KEY", "BStFXJbScjS0gbNSRFp2ZAVal")
-CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET", "lQNj9xi0r99XoID6J2I5sRJK9CS6iYJg6xiAnx73nZyRoDDCva")
-ACCESS_TOKEN_KEY = os.environ.get("ACCESS_TOKEN_KEY", "1210293320162959360-0rfLNv01nk5xqsdiuD4YKkvzCHW5jc")
-ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET", "0IOeTbiXNw0WmTbRAu9lHW5JeEKkCpHbf9ss6anzf0jtJ")
+CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
+CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
+ACCESS_TOKEN_KEY = os.environ.get("ACCESS_TOKEN_KEY")
+ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET")
 
 
 class TwitterService:
