@@ -1,5 +1,6 @@
 import os
 import tweepy
+from tweepy import Cursor as cursor
 import logging
 import requests
 from tweepy.error import TweepError
@@ -40,9 +41,9 @@ class TwitterService:
         twitter = self.twitter_api_auth()
         twitter.create_favorite(tweet_id)
 
-    def get_tweets(self, search_query: str, tweets_per_query: int):
+    def get_tweets(self, search_query: str, max_tweets: int):
         twitter = self.twitter_api_auth()
-        tweets = twitter.search(q=search_query, count=tweets_per_query)
+        tweets = cursor(twitter.search, q=search_query).items(max_tweets)
         return tweets
 
     def favorite_selected_tweets(self, tweets):
