@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 tweepy = "*"
 praw = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"

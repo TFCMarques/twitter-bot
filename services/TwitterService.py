@@ -1,49 +1,48 @@
 import os
 import tweepy
-from tweepy import Cursor as cursor
 import logging
 import requests
+from PIL import Image
+from tweepy import Cursor
 from tweepy.error import TweepError
-
-CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
-CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
-ACCESS_TOKEN_KEY = os.environ.get("ACCESS_TOKEN_KEY")
-ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET")
 
 
 class TwitterService:
-    @staticmethod
-    def twitter_api_auth():
-        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
-        return tweepy.API(auth)
+    def __init__(self, consumer_key, consumer_secret, access_token_key, access_token_secret):
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token_key, access_token_secret)
+
+        self.twitter = tweepy.API(auth)
 
     def publish_tweet(self, message: str):
-        twitter = self.twitter_api_auth()
-        twitter.update_status(message)
+        self.twitter.update_status(message)
 
     def publish_tweet_with_media(self, message: str, media_url: str):
-        twitter = self.twitter_api_auth()
         filename = 'temp.jpg'
+        max_size = 3072
         response = requests.get(media_url, stream=True)
 
         if response.status_code == requests.codes.ok:
-            with open(filename, 'wb') as image:
+            with open(filename, 'wb') as file:
                 for chunk in response:
-                    image.write(chunk)
+                    file.write(chunk)
 
-            twitter.update_with_media(filename, status=message)
+            while os.path.getsize(filename) > max_size * 1024:
+                logging.info(f"Image file size is too big: {round(os.path.getsize(filename)/1024)}kb.")
+                image = Image.open(filename)
+                image.save(filename, optimize=True, quality=45)
+                logging.info(f"Image file size reduced: {round(os.path.getsize(filename)/1024)}kb.")
+
+            self.twitter.update_with_media(filename, status=message)
             os.remove(filename)
         else:
             print("Unable to download image")
 
     def favorite_tweet(self, tweet_id: int):
-        twitter = self.twitter_api_auth()
-        twitter.create_favorite(tweet_id)
+        self.twitter.create_favorite(tweet_id)
 
     def get_tweets(self, search_query: str, max_tweets: int):
-        twitter = self.twitter_api_auth()
-        tweets = cursor(twitter.search, q=search_query).items(max_tweets)
+        tweets = Cursor(self.twitter.search, q=search_query).items(max_tweets)
         return tweets
 
     def favorite_selected_tweets(self, tweets):
