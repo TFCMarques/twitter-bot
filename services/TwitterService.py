@@ -12,7 +12,7 @@ class TwitterService:
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token_key, access_token_secret)
 
-        self.twitter = tweepy.API(auth)
+        self.twitter = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     def publish_tweet(self, message: str):
         self.twitter.update_status(message)
@@ -59,7 +59,7 @@ class TwitterService:
                     logging.info(f"Tweet {tweet.id} is already favorited. Skipping...")
                     continue
                 if status_code == 429:
-                    logging.info(f"Twitter rate limit has been reached. Stopping process...")
+                    logging.info("Twitter rate limit has been reached. Stopping process...")
                     break
 
         if successful_favorites != 0:

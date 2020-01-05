@@ -31,6 +31,3 @@ for count, meme in enumerate(top_memes, 1):
     twitter_service.publish_tweet_with_media(message=msg, media_url=meme.url)
     logging.info(f"Tweeting meme #{count} of the day.")
 
-tweets = twitter_service.get_tweets(search_query="new year", max_tweets=1000)
-twitter_service.favorite_selected_tweets(tweets=tweets)
-
